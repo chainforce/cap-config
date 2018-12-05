@@ -1,10 +1,10 @@
 # Hyperledger Fabric Capability Configuration
 This project demonstrate how to configure **Capability** on a Hyperledger Fabric network. Specifically we want to use **Capability** feature in a **System Chaincode**. 
 
-We will use the [Simple Network](https://github.com/chainforce/native-fabric) and modifying its default capabilities.
+We will use the [Simple Network](https://github.com/chainforce/native-fabric) project and modifying its default capabilities to insert a capability for the system chaincode **example02**.
 
 
-## Create Capability
+## Create Capability Transaction
 The general instruction is provided by Fabric [Channel Update](https://hyperledger-fabric.readthedocs.io/en/latest/channel_update_tutorial.html) and [Capability Specification](https://hyperledger-fabric.readthedocs.io/en/latest/capability_requirements.html). It is recommended to get the existing configuration from the network; modify what you need, and submit a configuration transaction with the modified data. The specific steps to create and send a configuration transaction for modifying **Capability** is given below:
 
 1. Fetch existing config from the channel, `mych`, and store it in `config_block.pb`. This is a binary file containing the protobuf data of the most recent configuration block on the channel. Note the `FABBIN` and `FABCONF` from the [Simple Network](https://github.com/chainforce/native-fabric) project.
@@ -66,6 +66,8 @@ $FABBIN/configtxlator proto_encode --input cap_update_in_envelope.json --type co
 ```
 FABRIC_CFG_PATH=$FABCONF $FABBIN/peer channel update -f cap_update_in_envelope.pb -c mych -o 127.0.0.1:7050
 ```
+
+The **peer** will exit at this point as the capability validation rejects the newly added capability `example02`. We need to further modify Fabric validation code to allow **System Chaincode** to use **Capability** feature
 
 ### caps validation stacktrace
 github.com/hyperledger/fabric/core/peer.capabilitiesSupportedOrPanic(0x4df5b20, 0xc423417a00)
